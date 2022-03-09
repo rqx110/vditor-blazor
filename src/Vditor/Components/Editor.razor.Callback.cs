@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Vditor
 {
-    public partial class Editor : ComponentBase
+    public partial class Editor
     {
         [Parameter] public EventCallback<string> OnFocus { get; set; }
 
@@ -33,7 +33,7 @@ namespace Vditor
         public async Task HandleInput(string value)
         {
             _value = value;
-            _wattingUpdate = false;
+            _waitingUpdate = false;
 
             if (ValueChanged.HasDelegate)
             {

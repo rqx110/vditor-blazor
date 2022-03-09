@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Vditor.Models;
-using System.Linq;
 
 namespace Vditor
 {
-    public partial class Editor : ComponentBase, IDisposable
+    public partial class Editor : ComponentBase
     {
         /// <summary>
         /// Markdown Content
@@ -21,7 +20,7 @@ namespace Vditor
                 if (_value != value)
                 {
                     _value = value;
-                    _wattingUpdate = true;
+                    _waitingUpdate = true;
                 }
             }
         }
@@ -66,7 +65,7 @@ namespace Vditor
         private ElementReference _ref;
 
         private bool _editorRendered = false;
-        private bool _wattingUpdate = false;
+        private bool _waitingUpdate = false;
         private string _value;
 
         private bool _afterFirstRender = false;
@@ -90,9 +89,9 @@ namespace Vditor
 
             Options["Mode"] = Mode ?? "ir";
             Options["Placeholder"] = Placeholder ?? "";
-            Options["Height"] = int.TryParse(Height, out var h) ? h : (object)Height;
-            Options["Width"] = int.TryParse(Width, out var w) ? w : (object)Width;
-            Options["MinHeight"] = int.TryParse(MinHeight, out var m) ? m : (object)MinHeight;
+            Options["Height"] = int.TryParse(Height, out var h) ? h : Height;
+            Options["Width"] = int.TryParse(Width, out var w) ? w : Width;
+            Options["MinHeight"] = int.TryParse(MinHeight, out var m) ? m : MinHeight;
             Options["Options"] = Outline;
 
             if (Upload != null)
@@ -111,7 +110,7 @@ namespace Vditor
                     }
                     else if (item is CustomToolButton toolbar)
                     {
-                        bars.Add(new Dictionary<string, object>()
+                        bars.Add(new Dictionary<string, object>
                         {
                             ["hotkey"] = toolbar.Hotkey,
                             ["name"] = toolbar.Name,
@@ -129,9 +128,9 @@ namespace Vditor
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
-            if (_wattingUpdate && _editorRendered)
+            if (_waitingUpdate && _editorRendered)
             {
-                _wattingUpdate = false;
+                _waitingUpdate = false;
                 await SetValue(_value, true);
             }
         }
@@ -144,11 +143,6 @@ namespace Vditor
             }
 
             return string.Empty;
-        }
-
-        public void Dispose()
-        {
-            Destroy();
         }
     }
 }

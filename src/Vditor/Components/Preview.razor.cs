@@ -37,7 +37,7 @@ namespace Vditor
         [Parameter]
         public EventCallback OnRendered { get; set; }
 
-        [Inject] private IJSRuntime Js { get; set; }
+        [Inject] private VditorJsInterop JsInterop { get; set; }
 
         private ElementReference _ref;
         private string markdown;
@@ -71,9 +71,9 @@ namespace Vditor
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        public async Task SetPreview()
+        public ValueTask SetPreview()
         {
-            await Js.InvokeVoidAsync("vditorBlazor.preview", _ref, DotNetObjectReference.Create(this), this.Markdown, this.Options);
+            return JsInterop.SetPreview(DotNetObjectReference.Create(this), _ref, Markdown, Options);
         }
 
         [JSInvokable]

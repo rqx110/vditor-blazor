@@ -4,38 +4,38 @@ using System.Threading.Tasks;
 
 namespace Vditor
 {
-    public partial class Editor : ComponentBase
+    public partial class Editor
     {
-        [Inject] private IJSRuntime Js { get; set; }
+        [Inject] private VditorJsInterop JsInterop { get; set; }
 
-        public async Task CreateVditor()
+        public ValueTask CreateVditor()
         {
-            await Js.InvokeVoidAsync("vditorBlazor.createVditor", _ref, DotNetObjectReference.Create(this), this.Value, this.Options);
+            return JsInterop.CreateVditor(DotNetObjectReference.Create(this), _ref, Value, Options);
         }
 
         public ValueTask<string> GetValue()
         {
-            return Js.InvokeAsync<string>("vditorBlazor.getValue", _ref);
+            return JsInterop.GetValue(_ref);
         }
 
         public ValueTask<string> GetHTML()
         {
-            return Js.InvokeAsync<string>("vditorBlazor.getHTML", _ref);
+            return JsInterop.GetHTML(_ref);
         }
 
-        public async Task SetValue(string value, bool clearStack = false)
+        public ValueTask SetValue(string value, bool clearStack = false)
         {
-            await Js.InvokeVoidAsync("vditorBlazor.setValue", _ref, value, clearStack);
+            return JsInterop.SetValue(_ref, value, clearStack);
         }
 
-        public async Task InsertValue(string value, bool render = true)
+        public ValueTask InsertValue(string value, bool render = true)
         {
-            await Js.InvokeVoidAsync("vditorBlazor.insertValue", _ref, value, render);
+            return JsInterop.InsertValue(_ref, value, render);
         }
 
-        public async Task Destroy()
+        public ValueTask DestroyAsync()
         {
-            await Js.InvokeVoidAsync("vditorBlazor.destroy", _ref);
+            return JsInterop.DestroyAsync(_ref);
         }
     }
 }
